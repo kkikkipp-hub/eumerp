@@ -32,47 +32,43 @@ export default function FinanceDashboard() {
     fetchSummary();
   }, [month]);
 
+  const cards = data
+    ? [
+        { label: "매출", value: data.salesAmount, color: "text-success-600" },
+        { label: "매입", value: data.purchaseAmount, color: "text-error-500" },
+        { label: "이익", value: data.profit, color: data.profit >= 0 ? "text-primary-500" : "text-error-500" },
+      ]
+    : [];
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold">정산/회계</h2>
+        <h2 className="text-[20px] font-bold text-neutral-900">정산/회계</h2>
         <input
           type="month"
           value={month}
           onChange={(e) => setMonth(e.target.value)}
-          className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="bg-neutral-50 border border-neutral-200 rounded-[10px] px-3.5 py-2.5 text-[13px] text-neutral-700 focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-colors"
         />
       </div>
 
       {error && <ErrorBanner message={error} onRetry={fetchSummary} />}
 
-      {loading ? (
-        <div className="grid grid-cols-3 gap-4">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="bg-white rounded-lg border border-gray-200 p-6 animate-pulse">
-              <div className="h-4 bg-gray-200 rounded w-1/2 mb-3" />
-              <div className="h-8 bg-gray-200 rounded w-3/4" />
-            </div>
-          ))}
-        </div>
-      ) : data ? (
-        <div className="grid grid-cols-3 gap-4">
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <p className="text-sm text-gray-500 mb-1">매출</p>
-            <p className="text-2xl font-bold text-green-600">{formatWon(data.salesAmount)}</p>
-          </div>
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <p className="text-sm text-gray-500 mb-1">매입</p>
-            <p className="text-2xl font-bold text-red-600">{formatWon(data.purchaseAmount)}</p>
-          </div>
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <p className="text-sm text-gray-500 mb-1">이익</p>
-            <p className={`text-2xl font-bold ${data.profit >= 0 ? "text-blue-600" : "text-red-600"}`}>
-              {formatWon(data.profit)}
-            </p>
-          </div>
-        </div>
-      ) : null}
+      <div className="grid grid-cols-3 gap-4">
+        {loading
+          ? [1, 2, 3].map((i) => (
+              <div key={i} className="bg-white rounded-[12px] shadow-card p-6 animate-pulse">
+                <div className="h-3.5 bg-neutral-100 rounded-[6px] w-1/3 mb-4" />
+                <div className="h-7 bg-neutral-100 rounded-[6px] w-2/3" />
+              </div>
+            ))
+          : cards.map((card) => (
+              <div key={card.label} className="bg-white rounded-[12px] shadow-card p-6 hover:shadow-elevated transition-shadow">
+                <p className="text-[13px] text-neutral-500 mb-2">{card.label}</p>
+                <p className={`text-[24px] font-bold ${card.color}`}>{formatWon(card.value)}</p>
+              </div>
+            ))}
+      </div>
     </div>
   );
 }

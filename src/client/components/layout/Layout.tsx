@@ -1,5 +1,6 @@
 import { ReactNode, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { ClipboardListIcon, PackageIcon, WalletIcon, BarChartIcon, UsersIcon, MenuIcon } from "../common/Icons";
 
 interface LayoutProps {
   children: ReactNode;
@@ -9,11 +10,11 @@ interface LayoutProps {
 }
 
 const MENU_ITEMS = [
-  { path: "/orders", label: "주문 관리", icon: "📋", roles: ["관리자", "영업팀", "물류팀", "회계팀", "뷰어"] },
-  { path: "/inventory", label: "재고 관리", icon: "📦", roles: ["관리자", "영업팀", "물류팀", "회계팀", "뷰어"], badge: true },
-  { path: "/finance", label: "정산/회계", icon: "💰", roles: ["관리자", "회계팀", "뷰어"] },
-  { path: "/reports", label: "보고서", icon: "📊", roles: ["관리자", "영업팀", "물류팀", "회계팀", "뷰어"] },
-  { path: "/admin/users", label: "사용자 관리", icon: "👤", roles: ["관리자"] },
+  { path: "/orders", label: "주문 관리", Icon: ClipboardListIcon, roles: ["관리자", "영업팀", "물류팀", "회계팀", "뷰어"] },
+  { path: "/inventory", label: "재고 관리", Icon: PackageIcon, roles: ["관리자", "영업팀", "물류팀", "회계팀", "뷰어"], badge: true },
+  { path: "/finance", label: "정산/회계", Icon: WalletIcon, roles: ["관리자", "회계팀", "뷰어"] },
+  { path: "/reports", label: "보고서", Icon: BarChartIcon, roles: ["관리자", "영업팀", "물류팀", "회계팀", "뷰어"] },
+  { path: "/admin/users", label: "사용자 관리", Icon: UsersIcon, roles: ["관리자"] },
 ];
 
 export default function Layout({ children, user, onLogout, lowStockCount = 0 }: LayoutProps) {
@@ -25,31 +26,41 @@ export default function Layout({ children, user, onLogout, lowStockCount = 0 }: 
   );
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-neutral-100">
       {/* Sidebar */}
       <aside
-        className={`${sidebarOpen ? "w-60" : "w-0 overflow-hidden"} bg-white border-r border-gray-200 transition-all duration-200 flex-shrink-0`}
+        className={`${sidebarOpen ? "w-[240px]" : "w-0 overflow-hidden"} bg-white border-r border-neutral-200 transition-all duration-200 flex-shrink-0 flex flex-col`}
       >
-        <div className="p-4 border-b border-gray-200">
-          <h1 className="text-lg font-bold text-blue-600">이음 ERP</h1>
+        <div className="px-5 py-4 border-b border-neutral-100">
+          <div className="flex items-center gap-2.5">
+            <svg width="24" height="24" viewBox="0 0 32 32" className="flex-shrink-0">
+              <rect width="32" height="32" rx="8" fill="#3182f6"/>
+              <path d="M8 16c0-2.2 1.8-4 4-4h2c2.2 0 4 1.8 4 4s-1.8 4-4 4" stroke="white" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+              <path d="M14 16c0 2.2 1.8 4 4 4h2c2.2 0 4-1.8 4-4s-1.8-4-4-4" stroke="white" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+            </svg>
+            <span className="text-[15px] font-semibold text-neutral-900">이음 ERP</span>
+          </div>
         </div>
-        <nav className="p-2">
+        <nav className="flex-1 px-3 py-3">
           {visibleMenuItems.map((item) => {
             const isActive = location.pathname.startsWith(item.path);
             return (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg mb-0.5 text-sm transition-colors ${
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-[10px] mb-0.5 text-[13px] transition-colors relative ${
                   isActive
-                    ? "bg-blue-50 text-blue-700 font-medium"
-                    : "text-gray-600 hover:bg-gray-100"
+                    ? "bg-primary-50 text-primary-600 font-medium"
+                    : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800"
                 }`}
               >
-                <span>{item.icon}</span>
+                {isActive && (
+                  <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-4 bg-primary-500 rounded-r-full" />
+                )}
+                <item.Icon className="w-[18px] h-[18px]" />
                 <span>{item.label}</span>
                 {item.badge && lowStockCount > 0 && (
-                  <span className="ml-auto bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
+                  <span className="ml-auto bg-error-500 text-white text-[11px] leading-none px-1.5 py-1 rounded-full font-medium">
                     {lowStockCount}
                   </span>
                 )}
@@ -62,20 +73,18 @@ export default function Layout({ children, user, onLogout, lowStockCount = 0 }: 
       {/* Main area */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <header className="h-14 bg-white border-b border-gray-200 flex items-center px-4 justify-between flex-shrink-0">
-          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-1 hover:bg-gray-100 rounded">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
+        <header className="h-14 bg-white border-b border-neutral-100 flex items-center px-5 justify-between flex-shrink-0">
+          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-1.5 hover:bg-neutral-50 rounded-[8px] transition-colors">
+            <MenuIcon className="w-[18px] h-[18px] text-neutral-500" />
           </button>
           <div className="flex items-center gap-3">
-            <span className="text-sm text-gray-600">{user?.username}</span>
-            <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded">
+            <span className="text-[13px] text-neutral-600">{user?.username}</span>
+            <span className="text-[11px] bg-neutral-100 text-neutral-600 px-2 py-1 rounded-[6px] font-medium">
               {user?.roles[0]}
             </span>
             <button
               onClick={onLogout}
-              className="text-sm text-gray-500 hover:text-red-600 transition-colors"
+              className="text-[13px] text-neutral-400 hover:text-error-500 transition-colors"
             >
               로그아웃
             </button>

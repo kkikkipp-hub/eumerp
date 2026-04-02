@@ -5,6 +5,12 @@ import ErrorBanner from "../common/ErrorBanner";
 import Modal from "../common/Modal";
 import Toast from "../common/Toast";
 
+const STOCK_STYLES: Record<string, { badge: string; label: string }> = {
+  normal: { badge: "bg-success-50 text-success-700", label: "정상" },
+  low: { badge: "bg-warning-50 text-warning-500", label: "부족" },
+  out: { badge: "bg-error-50 text-error-600", label: "품절" },
+};
+
 export default function InventoryDashboard() {
   const [inventory, setInventory] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -63,37 +69,32 @@ export default function InventoryDashboard() {
       key: "current_quantity",
       label: "현재 수량",
       render: (row: any) => (
-        <span className={row.stock_status === "low" ? "text-orange-600 font-medium" : row.stock_status === "out" ? "text-red-600 font-bold" : ""}>
+        <span className={`font-medium ${row.stock_status === "low" ? "text-warning-500" : row.stock_status === "out" ? "text-error-500 font-bold" : "text-neutral-800"}`}>
           {row.current_quantity.toLocaleString()}
         </span>
       ),
     },
-    { key: "safety_stock", label: "안전재고" },
+    { key: "safety_stock", label: "안전재고", render: (row: any) => <span className="text-neutral-500">{row.safety_stock}</span> },
     { key: "warehouse_location", label: "창고 위치" },
     {
       key: "stock_status",
       label: "상태",
       render: (row: any) => {
-        const colors: Record<string, string> = {
-          normal: "bg-green-100 text-green-700",
-          low: "bg-orange-100 text-orange-700",
-          out: "bg-red-100 text-red-700",
-        };
-        const labels: Record<string, string> = { normal: "정상", low: "부족", out: "품절" };
+        const style = STOCK_STYLES[row.stock_status] || STOCK_STYLES.normal;
         return (
-          <span className={`px-2 py-0.5 rounded text-xs font-medium ${colors[row.stock_status]}`}>
-            {labels[row.stock_status]}
+          <span className={`inline-flex px-2 py-0.5 rounded-[6px] text-[12px] font-medium ${style.badge}`}>
+            {style.label}
           </span>
         );
       },
     },
     {
       key: "actions",
-      label: "입출고",
+      label: "",
       render: (row: any) => (
         <button
           onClick={(e) => { e.stopPropagation(); setTxModal({ itemId: row.item_id, itemName: row.name }); }}
-          className="text-blue-600 hover:text-blue-800 text-xs font-medium"
+          className="text-primary-500 hover:text-primary-700 text-[12px] font-medium transition-colors"
         >
           입출고
         </button>
@@ -106,7 +107,7 @@ export default function InventoryDashboard() {
       {toast && <Toast message={toast} onClose={() => setToast("")} />}
 
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold">재고 관리</h2>
+        <h2 className="text-[20px] font-bold text-neutral-900">재고 관리</h2>
       </div>
 
       <div className="flex gap-3 mb-4">
@@ -115,12 +116,12 @@ export default function InventoryDashboard() {
           placeholder="품목 검색..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="bg-neutral-50 border border-neutral-200 rounded-[10px] px-3.5 py-2.5 text-[13px] w-64 text-neutral-800 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-colors"
         />
         <select
           value={stockFilter}
           onChange={(e) => setStockFilter(e.target.value)}
-          className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="bg-neutral-50 border border-neutral-200 rounded-[10px] px-3.5 py-2.5 text-[13px] text-neutral-700 focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-colors"
         >
           <option value="">전체</option>
           <option value="normal">정상</option>
@@ -131,12 +132,7 @@ export default function InventoryDashboard() {
 
       {error && <ErrorBanner message={error} onRetry={fetchInventory} />}
 
-      <DataTable
-        columns={columns}
-        data={inventory}
-        loading={loading}
-        emptyMessage="재고 데이터가 없습니다"
-      />
+      <DataTable columns={columns} data={inventory} loading={loading} emptyMessage="재고 데이터가 없습니다" />
 
       {txModal && (
         <Modal
@@ -146,28 +142,28 @@ export default function InventoryDashboard() {
           confirmText={txType === "IN" ? "입고 처리" : "출고 처리"}
           loading={txLoading}
         >
-          <div className="space-y-3">
-            <div className="flex gap-2">
+          <div className="space-y-4">
+            <div className="flex gap-1.5 bg-neutral-100 p-1 rounded-[10px]">
               <button
                 onClick={() => setTxType("IN")}
-                className={`flex-1 py-2 rounded-lg text-sm font-medium ${txType === "IN" ? "bg-green-600 text-white" : "bg-gray-100 text-gray-600"}`}
+                className={`flex-1 py-2 rounded-[8px] text-[13px] font-semibold transition-all ${txType === "IN" ? "bg-white text-success-600 shadow-card" : "text-neutral-500"}`}
               >
                 입고
               </button>
               <button
                 onClick={() => setTxType("OUT")}
-                className={`flex-1 py-2 rounded-lg text-sm font-medium ${txType === "OUT" ? "bg-red-600 text-white" : "bg-gray-100 text-gray-600"}`}
+                className={`flex-1 py-2 rounded-[8px] text-[13px] font-semibold transition-all ${txType === "OUT" ? "bg-white text-error-500 shadow-card" : "text-neutral-500"}`}
               >
                 출고
               </button>
             </div>
             <input
               type="number"
-              placeholder="수량"
+              placeholder="수량을 입력하세요"
               value={txQuantity}
               onChange={(e) => setTxQuantity(e.target.value)}
               min={1}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full bg-neutral-50 border border-neutral-200 rounded-[10px] px-3.5 py-2.5 text-[14px] text-neutral-800 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-colors"
             />
           </div>
         </Modal>

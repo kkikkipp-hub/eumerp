@@ -5,13 +5,13 @@ import DataTable from "../common/DataTable";
 import ErrorBanner from "../common/ErrorBanner";
 import Toast from "../common/Toast";
 
-const STATUS_COLORS: Record<string, string> = {
-  접수: "bg-blue-100 text-blue-700",
-  확인: "bg-yellow-100 text-yellow-700",
-  출고: "bg-purple-100 text-purple-700",
-  배송: "bg-orange-100 text-orange-700",
-  완료: "bg-green-100 text-green-700",
-  취소: "bg-red-100 text-red-700",
+const STATUS_STYLES: Record<string, string> = {
+  접수: "bg-primary-50 text-primary-600",
+  확인: "bg-warning-50 text-warning-500",
+  출고: "bg-purple-50 text-purple-700",
+  배송: "bg-orange-50 text-orange-700",
+  완료: "bg-success-50 text-success-700",
+  취소: "bg-error-50 text-error-600",
 };
 
 export default function OrdersDashboard() {
@@ -50,14 +50,14 @@ export default function OrdersDashboard() {
       key: "order_date",
       label: "주문일",
       sortable: true,
-      render: (row: any) => new Date(row.order_date).toLocaleDateString("ko-KR"),
+      render: (row: any) => <span className="text-neutral-600">{new Date(row.order_date).toLocaleDateString("ko-KR")}</span>,
     },
     { key: "item_count", label: "품목 수" },
     {
       key: "status",
       label: "상태",
       render: (row: any) => (
-        <span className={`px-2 py-0.5 rounded text-xs font-medium ${STATUS_COLORS[row.status] || ""}`}>
+        <span className={`inline-flex px-2 py-0.5 rounded-[6px] text-[12px] font-medium ${STATUS_STYLES[row.status] || ""}`}>
           {row.status}
         </span>
       ),
@@ -65,7 +65,10 @@ export default function OrdersDashboard() {
     {
       key: "urgent_flag",
       label: "긴급",
-      render: (row: any) => (row.urgent_flag ? <span className="text-red-500 font-bold">!</span> : null),
+      render: (row: any) =>
+        row.urgent_flag ? (
+          <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-error-50 text-error-500 text-[11px] font-bold">!</span>
+        ) : null,
     },
   ];
 
@@ -74,10 +77,10 @@ export default function OrdersDashboard() {
       {toast && <Toast message={toast} onClose={() => setToast("")} />}
 
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold">주문 관리</h2>
+        <h2 className="text-[20px] font-bold text-neutral-900">주문 관리</h2>
         <button
           onClick={() => navigate("/orders/new")}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700"
+          className="bg-primary-500 text-white px-4 py-2.5 rounded-[10px] text-[13px] font-semibold hover:bg-primary-600 active:bg-primary-700 transition-colors"
         >
           + 신규 주문
         </button>
@@ -90,12 +93,12 @@ export default function OrdersDashboard() {
           placeholder="주문 ID 또는 고객사 검색..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="bg-neutral-50 border border-neutral-200 rounded-[10px] px-3.5 py-2.5 text-[13px] w-64 text-neutral-800 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-colors"
         />
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="bg-neutral-50 border border-neutral-200 rounded-[10px] px-3.5 py-2.5 text-[13px] text-neutral-700 focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-colors"
         >
           <option value="">전체 상태</option>
           {["접수", "확인", "출고", "배송", "완료", "취소"].map((s) => (

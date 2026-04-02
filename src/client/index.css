@@ -1,1 +1,68 @@
 @import "tailwindcss";
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
+
+@theme {
+  --font-sans: "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", Roboto, sans-serif;
+
+  --color-primary-50: #e8f3ff;
+  --color-primary-100: #c9e2ff;
+  --color-primary-200: #90c2ff;
+  --color-primary-300: #64a8ff;
+  --color-primary-400: #4593fc;
+  --color-primary-500: #3182f6;
+  --color-primary-600: #2272eb;
+  --color-primary-700: #1b64da;
+
+  --color-neutral-50: #f9fafb;
+  --color-neutral-100: #f2f4f6;
+  --color-neutral-200: #e5e8eb;
+  --color-neutral-300: #d1d6db;
+  --color-neutral-400: #b0b8c1;
+  --color-neutral-500: #8b95a1;
+  --color-neutral-600: #6b7684;
+  --color-neutral-700: #4e5968;
+  --color-neutral-800: #333d4b;
+  --color-neutral-900: #191f28;
+
+  --color-success-50: #e8faf0;
+  --color-success-100: #b5f0d3;
+  --color-success-500: #30b368;
+  --color-success-600: #1fa855;
+  --color-success-700: #13994a;
+
+  --color-error-50: #ffeeee;
+  --color-error-100: #ffd4d6;
+  --color-error-500: #f04452;
+  --color-error-600: #e02d3c;
+  --color-error-700: #c61f2e;
+
+  --color-warning-50: #fff8e6;
+  --color-warning-100: #ffedb5;
+  --color-warning-500: #f59e0b;
+
+  --color-purple-50: #f3f0ff;
+  --color-purple-100: #e0d4ff;
+  --color-purple-500: #8b5cf6;
+  --color-purple-700: #6d28d9;
+
+  --color-orange-50: #fff4e6;
+  --color-orange-100: #ffe0b5;
+  --color-orange-500: #f97316;
+  --color-orange-700: #c2410c;
+
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-elevated: 0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-modal: 0 8px 30px rgba(0, 0, 0, 0.12);
+  --shadow-toast: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-btn: 10px;
+}
+
+html {
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
