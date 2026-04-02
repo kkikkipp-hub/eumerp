@@ -19,9 +19,12 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
     setLoading(true);
     try {
       if (setupMode) {
-        await api.fetch("/auth/setup", { method: "POST", body: { username, password, email } });
-        setSetupMode(false);
-        setError("");
+        try {
+          await api.fetch("/auth/setup", { method: "POST", body: { username, password, email } });
+        } catch {
+          // Setup failed (already exists), switch to login mode
+          setSetupMode(false);
+        }
       }
       await onLogin(username, password);
     } catch (err: any) {
