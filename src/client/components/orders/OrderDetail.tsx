@@ -159,7 +159,7 @@ export default function OrderDetail() {
               onClick={() => setShowStatusModal(true)}
               className="bg-primary-500 text-white px-4 py-2.5 rounded-[10px] text-[13px] font-semibold hover:bg-primary-600 transition-colors"
             >
-              {nextStatus}으로 변경
+              {nextStatus}로 변경
             </button>
           )}
           {canCancel && (
@@ -265,7 +265,7 @@ export default function OrderDetail() {
           title="상태 변경"
           onClose={() => setShowStatusModal(false)}
           onConfirm={handleStatusChange}
-          confirmText={`${nextStatus}으로 변경`}
+          confirmText={`${nextStatus}로 변경`}
           loading={actionLoading}
         >
           <p className="text-[14px] text-neutral-700">
