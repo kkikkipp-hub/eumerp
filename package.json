@@ -1,0 +1,41 @@
+{
+  "name": "abc-erp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite --config vite.config.ts",
+    "dev:server": "wrangler dev",
+    "build": "vite build --config vite.config.ts",
+    "deploy": "npm run build && wrangler deploy",
+    "db:init": "wrangler d1 execute abc-erp-db --local --file=src/server/db/schema.sql",
+    "db:seed": "wrangler d1 execute abc-erp-db --local --file=src/server/db/seed.sql",
+    "db:reset": "npm run db:init && npm run db:seed",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hono/vite-dev-server": "^0.25.1",
+    "hono": "^4.12.9",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-router-dom": "^7.13.2",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260402.1",
+    "@tailwindcss/vite": "^4.2.2",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "tailwindcss": "^4.2.2",
+    "typescript": "^6.0.2",
+    "vite": "^8.0.3",
+    "vitest": "^4.1.2",
+    "wrangler": "^4.79.0"
+  }
+}
