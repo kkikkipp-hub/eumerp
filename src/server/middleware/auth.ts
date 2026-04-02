@@ -125,6 +125,7 @@ const ROUTE_PERMISSIONS: Record<string, string[]> = {
   "POST /api/inventory": ["관리자", "물류팀"],
   "GET /api/inventory": ["관리자", "영업팀", "물류팀", "회계팀", "뷰어"],
   "GET /api/financials": ["관리자", "회계팀", "뷰어"],
+  "GET /api/users": ["관리자"],
   "POST /api/users": ["관리자"],
   "PUT /api/users": ["관리자"],
   "PUT /api/user-roles": ["관리자"],
