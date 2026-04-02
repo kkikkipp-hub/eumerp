@@ -7,6 +7,7 @@ import { inventoryRoutes } from "./routes/inventory";
 import { financeRoutes } from "./routes/finance";
 import { userRoutes } from "./routes/users";
 import { reportRoutes } from "./routes/reports";
+import { customerRoutes } from "./routes/customers";
 
 export type Env = {
   Bindings: {
@@ -35,6 +36,7 @@ app.route("/api/inventory", inventoryRoutes);
 app.route("/api/financials", financeRoutes);
 app.route("/api/users", userRoutes);
 app.route("/api/reports", reportRoutes);
+app.route("/api/customers", customerRoutes);
 
 // Health check
 app.get("/api/health", (c) => c.json({ status: "ok", timestamp: new Date().toISOString() }));

@@ -7,9 +7,13 @@ import OrderCreate from "./components/orders/OrderCreate";
 import OrderDetail from "./components/orders/OrderDetail";
 import OrderUpload from "./components/orders/OrderUpload";
 import InventoryDashboard from "./components/inventory/InventoryDashboard";
+import StockHistory from "./components/inventory/StockHistory";
 import FinanceDashboard from "./components/finance/FinanceDashboard";
+import Receivables from "./components/finance/Receivables";
 import ReportsPage from "./components/reports/ReportsPage";
 import UserManagement from "./components/admin/UserManagement";
+import AuditLog from "./components/admin/AuditLog";
+import PasswordChange from "./components/admin/PasswordChange";
 
 export default function App() {
   const { user, loading, login, logout, defaultRoute } = useAuth();
@@ -35,9 +39,13 @@ export default function App() {
         <Route path="/orders/upload" element={<OrderUpload />} />
         <Route path="/orders/:orderId" element={<OrderDetail />} />
         <Route path="/inventory" element={<InventoryDashboard />} />
+        <Route path="/inventory/history" element={<StockHistory />} />
         <Route path="/finance" element={<FinanceDashboard />} />
+        <Route path="/finance/receivables" element={<Receivables />} />
         <Route path="/reports" element={<ReportsPage />} />
         <Route path="/admin/users" element={<UserManagement />} />
+        <Route path="/admin/audit-log" element={<AuditLog />} />
+        <Route path="/admin/password" element={<PasswordChange />} />
         <Route path="*" element={<Navigate to={defaultRoute} replace />} />
       </Routes>
     </Layout>

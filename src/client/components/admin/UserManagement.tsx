@@ -14,6 +14,8 @@ export default function UserManagement() {
   const [showCreate, setShowCreate] = useState(false);
   const [newUser, setNewUser] = useState({ username: "", password: "", email: "", roleId: 0 });
   const [createLoading, setCreateLoading] = useState(false);
+  const [roleChangeUser, setRoleChangeUser] = useState<{ userId: number; username: string; roleId: number } | null>(null);
+  const [roleChangeLoading, setRoleChangeLoading] = useState(false);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -49,6 +51,24 @@ export default function UserManagement() {
     }
   }
 
+  async function handleRoleChange() {
+    if (!roleChangeUser) return;
+    setRoleChangeLoading(true);
+    try {
+      await api.fetch("/users/user-roles", {
+        method: "PUT",
+        body: { userId: roleChangeUser.userId, roleId: roleChangeUser.roleId },
+      });
+      setToast(`${roleChangeUser.username}의 역할이 변경되었습니다`);
+      setRoleChangeUser(null);
+      fetchData();
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setRoleChangeLoading(false);
+    }
+  }
+
   const columns = [
     { key: "user_id", label: "ID" },
     { key: "username", label: "사용자명" },
@@ -68,6 +88,18 @@ export default function UserManagement() {
       key: "created_at",
       label: "생성일",
       render: (row: any) => <span className="text-neutral-500">{new Date(row.created_at).toLocaleDateString("ko-KR")}</span>,
+    },
+    {
+      key: "actions",
+      label: "",
+      render: (row: any) => (
+        <button
+          onClick={() => setRoleChangeUser({ userId: row.user_id, username: row.username, roleId: roles.find((r: any) => r.role_name === row.roles[0])?.role_id || 0 })}
+          className="text-primary-500 hover:text-primary-700 text-[12px] font-medium transition-colors"
+        >
+          역할 변경
+        </button>
+      ),
     },
   ];
 
@@ -90,6 +122,19 @@ export default function UserManagement() {
       {error && <ErrorBanner message={error} onRetry={fetchData} />}
 
       <DataTable columns={columns} data={users} loading={loading} emptyMessage="사용자가 없습니다" />
+
+      {roleChangeUser && (
+        <Modal title={`역할 변경: ${roleChangeUser.username}`} onClose={() => setRoleChangeUser(null)} onConfirm={handleRoleChange} confirmText="변경" loading={roleChangeLoading}>
+          <select
+            value={roleChangeUser.roleId}
+            onChange={(e) => setRoleChangeUser({ ...roleChangeUser, roleId: parseInt(e.target.value) })}
+            className={inputClass}
+          >
+            <option value={0}>역할 선택</option>
+            {roles.map((r: any) => <option key={r.role_id} value={r.role_id}>{r.role_name}</option>)}
+          </select>
+        </Modal>
+      )}
 
       {showCreate && (
         <Modal title="사용자 추가" onClose={() => setShowCreate(false)} onConfirm={handleCreate} confirmText="생성" loading={createLoading}>

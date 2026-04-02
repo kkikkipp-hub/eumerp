@@ -12,6 +12,17 @@ interface ParsedRow {
   urgentFlag?: boolean;
 }
 
+function downloadTemplate() {
+  const ws = XLSX.utils.aoa_to_sheet([
+    ["고객사ID", "품목ID", "수량", "메모", "긴급"],
+    [1, 1, 100, "샘플 주문", "N"],
+    [2, 3, 200, "", "Y"],
+  ]);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "주문");
+  XLSX.writeFile(wb, "주문_업로드_템플릿.xlsx");
+}
+
 export default function OrderUpload() {
   const navigate = useNavigate();
   const [rows, setRows] = useState<ParsedRow[]>([]);
@@ -106,9 +117,12 @@ export default function OrderUpload() {
         </button>
       </div>
 
-      {/* 안내 */}
-      <div className="bg-primary-50 rounded-[12px] p-4 mb-5 text-[13px] text-primary-700">
-        엑셀 파일의 컬럼: <strong>고객사ID</strong>, <strong>품목ID</strong>, <strong>수량</strong>, 메모(선택), 긴급(Y/N, 선택). 최대 500행.
+      {/* 안내 + 템플릿 다운로드 */}
+      <div className="bg-primary-50 rounded-[12px] p-4 mb-5 text-[13px] text-primary-700 flex items-center justify-between">
+        <span>엑셀 파일의 컬럼: <strong>고객사ID</strong>, <strong>품목ID</strong>, <strong>수량</strong>, 메모(선택), 긴급(Y/N, 선택). 최대 500행.</span>
+        <button onClick={downloadTemplate} className="text-primary-600 font-semibold hover:text-primary-700 flex-shrink-0 ml-4">
+          템플릿 다운로드
+        </button>
       </div>
 
       {parseError && (

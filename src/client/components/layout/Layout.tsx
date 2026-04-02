@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import React, { ReactNode, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ClipboardListIcon, PackageIcon, WalletIcon, BarChartIcon, UsersIcon, MenuIcon } from "../common/Icons";
 
@@ -12,9 +12,12 @@ interface LayoutProps {
 const MENU_ITEMS = [
   { path: "/orders", label: "주문 관리", Icon: ClipboardListIcon, roles: ["관리자", "영업팀", "물류팀", "회계팀", "뷰어"] },
   { path: "/inventory", label: "재고 관리", Icon: PackageIcon, roles: ["관리자", "영업팀", "물류팀", "회계팀", "뷰어"], badge: true },
-  { path: "/finance", label: "정산/회계", Icon: WalletIcon, roles: ["관리자", "회계팀", "뷰어"] },
+  { path: "/finance", label: "정산/회계", Icon: WalletIcon, roles: ["관리자", "회계팀", "뷰어"],
+    sub: [{ path: "/finance/receivables", label: "미수금 관리" }] },
   { path: "/reports", label: "보고서", Icon: BarChartIcon, roles: ["관리자", "영업팀", "물류팀", "회계팀", "뷰어"] },
-  { path: "/admin/users", label: "사용자 관리", Icon: UsersIcon, roles: ["관리자"] },
+  { path: "/admin/users", label: "사용자 관리", Icon: UsersIcon, roles: ["관리자"],
+    sub: [{ path: "/admin/audit-log", label: "감사 로그" }] },
+  { path: "/admin/password", label: "비밀번호 변경", Icon: UsersIcon, roles: ["관리자", "영업팀", "물류팀", "회계팀", "뷰어"], hidden: true },
 ];
 
 export default function Layout({ children, user, onLogout, lowStockCount = 0 }: LayoutProps) {
@@ -22,7 +25,7 @@ export default function Layout({ children, user, onLogout, lowStockCount = 0 }: 
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const visibleMenuItems = MENU_ITEMS.filter((item) =>
-    user?.roles.some((role) => item.roles.includes(role))
+    !item.hidden && user?.roles.some((role) => item.roles.includes(role))
   );
 
   return (
@@ -45,8 +48,8 @@ export default function Layout({ children, user, onLogout, lowStockCount = 0 }: 
           {visibleMenuItems.map((item) => {
             const isActive = location.pathname.startsWith(item.path);
             return (
+              <React.Fragment key={item.path}>
               <Link
-                key={item.path}
                 to={item.path}
                 className={`flex items-center gap-3 px-3 py-3 rounded-[10px] mb-0.5 text-[13px] transition-colors relative ${
                   isActive
@@ -65,9 +68,29 @@ export default function Layout({ children, user, onLogout, lowStockCount = 0 }: 
                   </span>
                 )}
               </Link>
+              {item.sub && isActive && item.sub.map((sub: any) => (
+                <Link
+                  key={sub.path}
+                  to={sub.path}
+                  className={`flex items-center gap-3 pl-10 pr-3 py-2 rounded-[8px] text-[12px] transition-colors ${
+                    location.pathname === sub.path ? "text-primary-600 font-medium" : "text-neutral-500 hover:text-neutral-700"
+                  }`}
+                >
+                  {sub.label}
+                </Link>
+              ))}
+            </React.Fragment>
             );
           })}
         </nav>
+        <div className="px-3 py-3 border-t border-neutral-100">
+          <Link
+            to="/admin/password"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-[10px] text-[12px] text-neutral-500 hover:bg-neutral-50 hover:text-neutral-700 transition-colors"
+          >
+            비밀번호 변경
+          </Link>
+        </div>
       </aside>
 
       {/* Main area */}

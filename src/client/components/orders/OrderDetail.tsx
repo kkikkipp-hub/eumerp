@@ -31,6 +31,9 @@ export default function OrderDetail() {
   const [toast, setToast] = useState("");
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editNotes, setEditNotes] = useState("");
+  const [editUrgent, setEditUrgent] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
 
   async function fetchOrder() {
@@ -73,6 +76,23 @@ export default function OrderDetail() {
     }
   }
 
+  async function handleEdit() {
+    setActionLoading(true);
+    try {
+      await api.fetch(`/orders/${orderId}`, {
+        method: "PUT",
+        body: { notes: editNotes, urgentFlag: editUrgent },
+      });
+      setToast("주문 정보가 수정되었습니다");
+      setShowEditModal(false);
+      fetchOrder();
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setActionLoading(false);
+    }
+  }
+
   async function handleCancel() {
     setActionLoading(true);
     try {
@@ -106,6 +126,7 @@ export default function OrderDetail() {
 
   const nextStatus = NEXT_STATUS[order.status];
   const canCancel = order.status === "접수";
+  const canEdit = ["접수", "확인"].includes(order.status);
 
   return (
     <div className="max-w-3xl">
@@ -125,6 +146,14 @@ export default function OrderDetail() {
           )}
         </div>
         <div className="flex gap-2">
+          {canEdit && (
+            <button
+              onClick={() => { setEditNotes(order.notes || ""); setEditUrgent(!!order.urgent_flag); setShowEditModal(true); }}
+              className="text-neutral-600 px-4 py-2.5 rounded-[10px] text-[13px] font-medium hover:bg-neutral-50 border border-neutral-200 transition-colors"
+            >
+              수정
+            </button>
+          )}
           {nextStatus && (
             <button
               onClick={() => setShowStatusModal(true)}
@@ -261,6 +290,32 @@ export default function OrderDetail() {
           <p className="text-[14px] text-neutral-700">
             주문 #{order.order_id}을 정말 취소하시겠습니까? 이 작업은 되돌릴 수 없습니다.
           </p>
+        </Modal>
+      )}
+
+      {/* 수정 모달 */}
+      {showEditModal && (
+        <Modal
+          title="주문 수정"
+          onClose={() => setShowEditModal(false)}
+          onConfirm={handleEdit}
+          confirmText="저장"
+          loading={actionLoading}
+        >
+          <div className="space-y-3">
+            <div>
+              <label className="block text-[13px] font-medium text-neutral-700 mb-1.5">특이사항 메모</label>
+              <textarea
+                value={editNotes}
+                onChange={(e) => setEditNotes(e.target.value)}
+                className="w-full bg-neutral-50 border border-neutral-200 rounded-[10px] px-3.5 py-2.5 text-[14px] text-neutral-800 h-20 resize-none focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500"
+              />
+            </div>
+            <label className="flex items-center gap-2.5 cursor-pointer">
+              <input type="checkbox" checked={editUrgent} onChange={(e) => setEditUrgent(e.target.checked)} className="w-4 h-4 rounded border-neutral-300 text-primary-500" />
+              <span className="text-[13px] text-neutral-700">긴급 주문</span>
+            </label>
+          </div>
         </Modal>
       )}
     </div>

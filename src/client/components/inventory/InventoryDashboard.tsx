@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { api } from "../../lib/api";
 import DataTable from "../common/DataTable";
 import ErrorBanner from "../common/ErrorBanner";
@@ -12,6 +13,7 @@ const STOCK_STYLES: Record<string, { badge: string; label: string }> = {
 };
 
 export default function InventoryDashboard() {
+  const navigate = useNavigate();
   const [inventory, setInventory] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -108,6 +110,12 @@ export default function InventoryDashboard() {
 
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-[20px] font-bold text-neutral-900">재고 관리</h2>
+        <button
+          onClick={() => navigate("/inventory/history")}
+          className="text-primary-500 hover:text-primary-700 text-[13px] font-medium transition-colors"
+        >
+          입출고 이력 조회
+        </button>
       </div>
 
       <div className="flex gap-3 mb-4">

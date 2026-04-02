@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { Env } from "../index";
-import { authMiddleware, rbacMiddleware, hashPassword, auditLog } from "../middleware/auth";
+import { authMiddleware, rbacMiddleware, hashPassword, verifyPassword, auditLog } from "../middleware/auth";
 
 export const userRoutes = new Hono<Env>();
 
@@ -102,4 +102,54 @@ userRoutes.put("/user-roles", async (c) => {
 userRoutes.get("/roles", async (c) => {
   const result = await c.env.DB.prepare("SELECT * FROM roles").all();
   return c.json({ roles: result.results });
+});
+
+// PUT /api/users/password — 비밀번호 변경
+userRoutes.put("/password", async (c) => {
+  const user = (c as any).get("user") as any;
+  const body = await c.req.json<{ currentPassword: string; newPassword: string }>();
+
+  if (!body.currentPassword || !body.newPassword) {
+    return c.json({ error: "현재 비밀번호와 새 비밀번호를 입력하세요", code: 400 }, 400);
+  }
+  if (body.newPassword.length < 6) {
+    return c.json({ error: "새 비밀번호는 6자 이상이어야 합니다", code: 400 }, 400);
+  }
+
+  const dbUser = await c.env.DB.prepare("SELECT password_hash FROM users WHERE user_id = ?")
+    .bind(user.sub).first<{ password_hash: string }>();
+  if (!dbUser) return c.json({ error: "사용자를 찾을 수 없습니다", code: 404 }, 404);
+
+  const valid = await verifyPassword(body.currentPassword, dbUser.password_hash);
+  if (!valid) return c.json({ error: "현재 비밀번호가 일치하지 않습니다", code: 401 }, 401);
+
+  const newHash = await hashPassword(body.newPassword);
+  await c.env.DB.prepare("UPDATE users SET password_hash = ?, updated_at = datetime('now') WHERE user_id = ?")
+    .bind(newHash, user.sub).run();
+
+  await auditLog(c.env.DB, user.sub, "PASSWORD_CHANGE", "users", user.sub);
+  return c.json({ status: "비밀번호가 변경되었습니다" });
+});
+
+// GET /api/users/audit-log — 감사 로그 조회
+userRoutes.get("/audit-log", async (c) => {
+  const limit = Math.min(parseInt(c.req.query("limit") || "50"), 200);
+  const cursor = c.req.query("cursor");
+  const tableName = c.req.query("table");
+
+  let sql = `SELECT al.*, u.username FROM audit_log al LEFT JOIN users u ON al.user_id = u.user_id WHERE 1=1`;
+  const params: unknown[] = [];
+
+  if (tableName) { sql += " AND al.table_name = ?"; params.push(tableName); }
+  if (cursor) { sql += " AND al.log_id < ?"; params.push(parseInt(cursor)); }
+
+  sql += " ORDER BY al.created_at DESC, al.log_id DESC LIMIT ?";
+  params.push(limit + 1);
+
+  const result = await c.env.DB.prepare(sql).bind(...params).all();
+  const hasMore = result.results.length > limit;
+  const items = result.results.slice(0, limit);
+  const nextCursor = hasMore && items.length > 0 ? String((items[items.length - 1] as any).log_id) : null;
+
+  return c.json({ logs: items, nextCursor, hasMore });
 });

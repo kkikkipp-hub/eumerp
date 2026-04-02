@@ -50,13 +50,8 @@ export default function OrderCreate() {
           unit_price: i.unit_price,
         })));
 
-        // 고객사 목록은 별도 API가 없으므로 시드 데이터 기반
-        // TODO: GET /api/customers API 추가
-        setCustomers([
-          { customer_id: 1, name: "(주)삼성전기" },
-          { customer_id: 2, name: "LG이노텍" },
-          { customer_id: 3, name: "SK하이닉스" },
-        ]);
+        const custData = await api.fetch("/customers");
+        setCustomers(custData.customers);
       } catch (err: any) {
         setError(err.message);
       }
