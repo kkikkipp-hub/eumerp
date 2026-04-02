@@ -74,7 +74,7 @@ export default function InventoryDashboard() {
         </span>
       ),
     },
-    { key: "safety_stock", label: "안전재고", render: (row: any) => <span className="text-neutral-500">{row.safety_stock}</span> },
+    { key: "safety_stock", label: "안전재고", render: (row: any) => <span className="text-neutral-500">{row.safety_stock.toLocaleString()}</span> },
     { key: "warehouse_location", label: "창고 위치" },
     {
       key: "stock_status",
