@@ -35,7 +35,7 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-sm">
         <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-blue-600">ABC전자 ERP</h1>
+          <h1 className="text-2xl font-bold text-blue-600">이음 ERP</h1>
           <p className="text-sm text-gray-500 mt-1">{setupMode ? "관리자 계정 생성" : "로그인"}</p>
         </div>
 

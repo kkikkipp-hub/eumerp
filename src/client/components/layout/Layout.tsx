@@ -31,7 +31,7 @@ export default function Layout({ children, user, onLogout, lowStockCount = 0 }: 
         className={`${sidebarOpen ? "w-60" : "w-0 overflow-hidden"} bg-white border-r border-gray-200 transition-all duration-200 flex-shrink-0`}
       >
         <div className="p-4 border-b border-gray-200">
-          <h1 className="text-lg font-bold text-blue-600">ABC전자 ERP</h1>
+          <h1 className="text-lg font-bold text-blue-600">이음 ERP</h1>
         </div>
         <nav className="p-2">
           {visibleMenuItems.map((item) => {
