@@ -18,7 +18,15 @@ export type Env = {
 const app = new Hono<Env>();
 
 app.use("*", logger());
-app.use("/api/*", cors());
+app.use(
+  "/api/*",
+  cors({
+    origin: ["https://eumerp.pages.dev", "http://localhost:5173"],
+    allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
 
 // API routes
 app.route("/api/auth", authRoutes);

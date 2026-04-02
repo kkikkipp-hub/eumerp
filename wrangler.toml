@@ -1,12 +1,10 @@
-name = "eumerp"
+# API Worker
+name = "eumerp-api"
 main = "src/server/index.ts"
 compatibility_date = "2024-12-01"
 compatibility_flags = ["nodejs_compat"]
 
-[assets]
-directory = "./dist/client"
-
 [[d1_databases]]
 binding = "DB"
-database_name = "abc-erp-db"
-database_id = "local"
+database_name = "eumerp-db"
+database_id = "bd48cf56-cfba-46ba-9e3d-94accfaa4016"
