@@ -48,7 +48,7 @@ export default function Layout({ children, user, onLogout, lowStockCount = 0 }: 
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-[10px] mb-0.5 text-[13px] transition-colors relative ${
+                className={`flex items-center gap-3 px-3 py-3 rounded-[10px] mb-0.5 text-[13px] transition-colors relative ${
                   isActive
                     ? "bg-primary-50 text-primary-600 font-medium"
                     : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800"
@@ -74,8 +74,8 @@ export default function Layout({ children, user, onLogout, lowStockCount = 0 }: 
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
         <header className="h-14 bg-white border-b border-neutral-100 flex items-center px-5 justify-between flex-shrink-0">
-          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-1.5 hover:bg-neutral-50 rounded-[8px] transition-colors">
-            <MenuIcon className="w-[18px] h-[18px] text-neutral-500" />
+          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2.5 hover:bg-neutral-50 rounded-[8px] transition-colors">
+            <MenuIcon className="w-5 h-5 text-neutral-500" />
           </button>
           <div className="flex items-center gap-3">
             <span className="text-[13px] text-neutral-600">{user?.username}</span>
@@ -84,7 +84,7 @@ export default function Layout({ children, user, onLogout, lowStockCount = 0 }: 
             </span>
             <button
               onClick={onLogout}
-              className="text-[13px] text-neutral-400 hover:text-error-500 transition-colors"
+              className="text-[13px] text-neutral-400 hover:text-error-500 transition-colors px-2 py-2"
             >
               로그아웃
             </button>
