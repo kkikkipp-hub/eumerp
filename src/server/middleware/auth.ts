@@ -131,6 +131,10 @@ const ROUTE_PERMISSIONS: Record<string, string[]> = {
   "PUT /api/user-roles": ["관리자"],
   "GET /api/reports": ["관리자", "영업팀", "물류팀", "회계팀", "뷰어"],
   "GET /api/customers": ["관리자", "영업팀", "물류팀", "회계팀", "뷰어"],
+  "GET /api/items": ["관리자", "영업팀", "물류팀", "회계팀", "뷰어"],
+  "POST /api/items": ["관리자", "물류팀"],
+  "PUT /api/items": ["관리자", "물류팀"],
+  "DELETE /api/items": ["관리자"],
 };
 
 export async function rbacMiddleware(c: Context<Env>, next: Next) {

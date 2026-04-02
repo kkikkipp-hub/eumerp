@@ -11,7 +11,8 @@ interface LayoutProps {
 
 const MENU_ITEMS = [
   { path: "/orders", label: "주문 관리", Icon: ClipboardListIcon, roles: ["관리자", "영업팀", "물류팀", "회계팀", "뷰어"] },
-  { path: "/inventory", label: "재고 관리", Icon: PackageIcon, roles: ["관리자", "영업팀", "물류팀", "회계팀", "뷰어"], badge: true },
+  { path: "/inventory", label: "재고 관리", Icon: PackageIcon, roles: ["관리자", "영업팀", "물류팀", "회계팀", "뷰어"], badge: true,
+    sub: [{ path: "/inventory/items", label: "품목 관리" }, { path: "/inventory/history", label: "입출고 이력" }] },
   { path: "/finance", label: "정산/회계", Icon: WalletIcon, roles: ["관리자", "회계팀", "뷰어"],
     sub: [{ path: "/finance/receivables", label: "미수금 관리" }] },
   { path: "/reports", label: "보고서", Icon: BarChartIcon, roles: ["관리자", "영업팀", "물류팀", "회계팀", "뷰어"] },

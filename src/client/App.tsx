@@ -8,6 +8,7 @@ import OrderDetail from "./components/orders/OrderDetail";
 import OrderUpload from "./components/orders/OrderUpload";
 import InventoryDashboard from "./components/inventory/InventoryDashboard";
 import StockHistory from "./components/inventory/StockHistory";
+import ItemManagement from "./components/inventory/ItemManagement";
 import FinanceDashboard from "./components/finance/FinanceDashboard";
 import Receivables from "./components/finance/Receivables";
 import ReportsPage from "./components/reports/ReportsPage";
@@ -39,6 +40,7 @@ export default function App() {
         <Route path="/orders/upload" element={<OrderUpload />} />
         <Route path="/orders/:orderId" element={<OrderDetail />} />
         <Route path="/inventory" element={<InventoryDashboard />} />
+        <Route path="/inventory/items" element={<ItemManagement />} />
         <Route path="/inventory/history" element={<StockHistory />} />
         <Route path="/finance" element={<FinanceDashboard />} />
         <Route path="/finance/receivables" element={<Receivables />} />
