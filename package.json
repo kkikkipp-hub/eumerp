@@ -37,5 +37,17 @@
     "vite": "^8.0.3",
     "vitest": "^4.1.2",
     "wrangler": "^4.79.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp",
+      "workerd",
+      "@swc/core",
+      "@swc/html",
+      "unrs-resolver",
+      "@tailwindcss/oxide",
+      "better-sqlite3"
+    ]
   }
 }
